@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\User\Checkout\Store;
 use App\Models\Camp;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Checkout\AfterCheckout;
+use Psy\VersionUpdater\Checker;
 
 class CheckoutController extends Controller
 {
@@ -60,6 +63,9 @@ class CheckoutController extends Controller
 
         // create checkout
         $checkout = Checkout::create($data);
+
+        // sending Email
+        Mail::to(Auth::user()->email)->send(new AfterCheckout($checkout));
 
 
         return redirect(route('checkout.success')); 
@@ -114,4 +120,5 @@ class CheckoutController extends Controller
     {
         return view('checkout.success');
     }
+
 }
